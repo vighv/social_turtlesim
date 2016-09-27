@@ -11,49 +11,44 @@ import random
 
 Num_turtles = 2
 x1 = 0
-x2 = 0
+
 
 def where1(pose_data):
     global x1
     x1 = pose_data.x
 
-def where2(pose_data):
-    global x2
-    x2 = pose_data.x
 
+# Create artist turtles with specified end point to draw the boundary
 
-# Spawn and kill turtles to draw the boundary, draw the boundary in red (255,0,0) ||Need to refactor!
 def draw_boundary():
+    artist1 = (0, 5.5, 0, 'artist1')
+    end1 = 5
+    draw_boundary_func(artist1 , end1)
+    end2 = 11
+    artist2 = (6, 5.5, 0, 'artist2')
+    draw_boundary_func(artist2 , end2)
+
+# Spawn and kill turtles to draw the boundary, draw the boundary in red (255,0,0), width 2
+
+def draw_boundary_func(artist_params , end_pt):
     rospy.wait_for_service('spawn')
 
     draw_artist = rospy.ServiceProxy('spawn', turtlesim.srv.Spawn)
-    draw_artist(0, 5.5, 0, 'artist1')
-    draw_artist(6, 5.5, 0, 'artist2')
+    draw_artist(*artist_params)
 
-    artist1_set_pen = rospy.ServiceProxy('artist1/set_pen', turtlesim.srv.SetPen)
-    artist1_set_pen(255, 0, 0, 2, 0)
-
-    artist2_set_pen = rospy.ServiceProxy('artist2/set_pen', turtlesim.srv.SetPen)
-    artist2_set_pen(255, 0, 0, 2, 0)
+    artist_set_pen = rospy.ServiceProxy(artist_params[3]+'/set_pen', turtlesim.srv.SetPen)
+    artist_set_pen(255, 0, 0, 2, 0)
 
     rospy.wait_for_service('kill')
     kill_artist = rospy.ServiceProxy('kill', turtlesim.srv.Kill)
 
-    rospy.Subscriber('artist1/pose',Pose,where1)
+    rospy.Subscriber(artist_params[3]+'/pose',Pose,where1)
     global x1
-    while x1 < 5:
-        tpub = rospy.Publisher("artist1/cmd_vel", Twist, queue_size=10)
-        tpub.publish(Twist(Vector3(10, 0, 0), Vector3(0, 0, 0)))
-    kill_artist('artist1')
+    while x1 < end_pt:
+        tpub = rospy.Publisher(artist_params[3]+"/cmd_vel", Twist, queue_size=10)
+        tpub.publish(Twist(Vector3(20, 0, 0), Vector3(0, 0, 0)))
+    kill_artist(artist_params[3])
 
-    rospy.Subscriber('artist2/pose', Pose, where2)
-    global x2
-    while x2 < 11:
-        tpub2 = rospy.Publisher("artist2/cmd_vel", Twist, queue_size=10)
-        tpub2.publish(Twist(Vector3(10, 0, 0), Vector3(0, 0, 0)))
-    kill_artist('artist2')
-    #rospy.spin()
-    #rospy.signal_shutdown("Done drawing")
 
 # Spawn a turtle with given (x,y) position, angle and name given in the parameters:
 
