@@ -22,8 +22,7 @@ def where2(pose_data):
     x2 = pose_data.x
 
 
-# Spawn and kill turtles to draw the boundary:
-
+# Spawn and kill turtles to draw the boundary, draw the boundary in red (255,0,0) ||Need to refactor!
 def draw_boundary():
     rospy.wait_for_service('spawn')
 
