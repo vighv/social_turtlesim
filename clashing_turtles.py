@@ -30,7 +30,7 @@ def draw_boundary():
 
 # Spawn and kill turtles to draw the boundary, draw the boundary in red (255,0,0), width 2
 
-def draw_boundary_func(artist_params , end_pt):
+def draw_boundary_func(artist_params, end_pt):
     rospy.wait_for_service('spawn')
 
     draw_artist = rospy.ServiceProxy('spawn', turtlesim.srv.Spawn)
@@ -46,7 +46,7 @@ def draw_boundary_func(artist_params , end_pt):
     global x1
     while x1 < end_pt:
         tpub = rospy.Publisher(artist_params[3]+"/cmd_vel", Twist, queue_size=10)
-        tpub.publish(Twist(Vector3(20, 0, 0), Vector3(0, 0, 0)))
+        tpub.publish(Twist(Vector3(50, 0, 0), Vector3(0, 0, 0)))
     kill_artist(artist_params[3])
 
 
