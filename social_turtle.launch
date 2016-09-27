@@ -1,0 +1,8 @@
+<launch>
+
+    <node ns="social_force" name="turtle1" pkg="turtlesim" type="turtlesim_node" output="screen"/>
+
+    <node ns="social_force" name="turtle_mover" pkg="social_turtle" type="clashing_turtles.py" />
+
+</launch>
+
